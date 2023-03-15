@@ -7,6 +7,7 @@ socket: This module provides a way to look up DNS information for an IP address.
 whois: This module provides a way to look up WHOIS information for an IP address.
 requests: This module provides a way to make HTTP requests to external APIs, which we will use to perform geolocation lookups.
 ipwhois: This module provides a way to look up IP information, including RDAP information, for an IP address.
+
 You can install these modules using pip, the Python package manager. Open a command prompt or terminal window, and type the following commands:
 
 Requirements:
