@@ -23,10 +23,17 @@ When you run this script, it prompts you to enter an IP address to investigate. 
 
 Note that the ipwhois module requires an API key to perform RDAP lookups. If you don't have an API key, you can sign up for a free one at https://whoisxmlapi.com/. Once you have an API key, you can pass it to the IPWhois constructor like this:
 
+****
 python
 Copy code
 from ipwhois import IPWhois
 
 api_key = "YOUR_API_KEY"
 ipwhois_result = IPWhois(ip_address, api_key=api_key).lookup_rdap()
+****
+
 This will allow you to perform RDAP lookups using the ipwhois module.
+
+RUN THE SCRIPT and you will be prompted for an IP-address
+
+\\python ip_investigation.py
