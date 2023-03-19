@@ -1,25 +1,35 @@
+# IP Analysis Report
+# Copyright (c) 2023 @tabalizer
+# MIT License
+
 import folium
 import json
 import os
+import csv
 from datetime import datetime
 from ipwhois import IPWhois
 import dns.resolver
 import geoip2.database
 
-AUDIT_LOG_FILE = "audit_log.json"
+AUDIT_LOG_FILE = "audit_log.csv"
 REPORT_FILE = "ip_analysis_report.txt"
 
 def save_audit_log(log_data):
     if os.path.exists(AUDIT_LOG_FILE):
-        with open(AUDIT_LOG_FILE, "r") as f:
-            logs = json.load(f)
+        mode = "a"
     else:
-        logs = []
+        mode = "w"
 
-    logs.append(log_data)
+    with open(AUDIT_LOG_FILE, mode, newline='') as f:
+        fieldnames = ['investigator', 'case_number', 'timestamp', 'ip_address', 'whois_data', 'dns_data', 'geolocation_data']
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
 
-    with open(AUDIT_LOG_FILE, "w") as f:
-        json.dump(logs, f, indent=4)
+        if mode == "w":
+            writer.writeheader()
+
+        log_data["whois_data"] = json.dumps(log_data["whois_data"])
+        log_data["geolocation_data"] = json.dumps(log_data["geolocation_data"])
+        writer.writerow(log_data)
 
 def whois_analysis(ip):
     whois = IPWhois(ip)
@@ -90,37 +100,27 @@ def create_map(latitude, longitude):
     folium.Marker([latitude, longitude]).add_to(map)
     return map.get_root().render()
 
-def create_audit_trail_rows():
-    rows = ""
-    with open(AUDIT_LOG_FILE, "r") as f:
-        logs = json.load(f)
-
-    for log in logs:
-        row = f"""
-<tr>
-    <td>{log["timestamp"]}</td>
-    <td>{log["investigator"]}</td>
-    <td>{log["case_number"]}</td>
-    <td>{log["ip_address"]}</td>
-</tr>
-"""
-        rows += row
-
-    return rows
-
 def create_html_report(audit_log_data, map_html):
-    whois_data = "\n".join([f"<li>{k.capitalize().replace('_', ' ')}: {v}</li>" for k, v in audit_log_data["whois_data"].items()])
-    geolocation_data = "\n".join([f"<li>{k.capitalize().replace('_', ' ')}: {v}</li>" for k, v in audit_log_data["geolocation_data"].items()])
-
+    whois_data = "<br>".join([f"{key.capitalize().replace('_', ' ')}: {value}" for key, value in audit_log_data["whois_data"].items()])
+    geolocation_data = "<br>".join([f"{key.capitalize().replace('_', ' ')}: {value}" for key, value in audit_log_data["geolocation_data"].items()])
     report = f"""
 <!doctype html>
-<html lang="en","no">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>IP Analysis Report</title>
     <style>
         body {{ font-family: Arial, sans-serif; }}
         h1, h2 {{ margin-bottom: 0.5em; }}
+        pre {{ white-space: pre-wrap; }}
+        table {{
+            border-collapse: collapse;
+            margin-top: 10px;
+        }}
+        table, th, td {{
+            border: 1px solid black;
+            padding: 10px;
+        }}
         #map-container {{
             width: 800px;
             height: 800px;
@@ -136,19 +136,21 @@ def create_html_report(audit_log_data, map_html):
 <body>
     <header>
         <h1>IP Analysis Report</h1>
-        <p>Investigator: {audit_log_data["investigator"]}</p>
-        <p>Case Number: {audit_log_data["case_number"]}</p>
     </header>
     <main>
         <hr />
         <h2>Whois Analysis:</h2>
-        <ul>
+        <p>
             {whois_data}
-        </ul>
+        </p>
+        <h2>DNS Analysis:</h2>
+        <p>
+            {audit_log_data["dns_data"]}
+        </p>
         <h2>Geolocation Analysis:</h2>
-        <ul>
+        <p>
             {geolocation_data}
-        </ul>
+        </p>
         <h2>Geolocation Map:</h2>
         <div id="map-container">
             {map_html}
@@ -161,7 +163,6 @@ def create_html_report(audit_log_data, map_html):
 </html>
 """
     return report
-
 
 def main():
     ip = input("Enter the IP address: ")
@@ -190,18 +191,15 @@ def main():
         "geolocation_data": geolocation_data
     }
     save_audit_log(audit_log_data)
-
-    print("\nSaving the text report...")
-    text_report = create_report(audit_log_data)
-    save_report(text_report, REPORT_FILE)
-    print(f"Text report saved to {REPORT_FILE}")
-
-    print("\nSaving the HTML report...")
-    lat = audit_log_data["geolocation_data"]["latitude"]
-    lon = audit_log_data["geolocation_data"]["longitude"]
+    report = create_report(audit_log_data)
+    save_report(report, REPORT_FILE)
+    print(f"\nReport saved to {REPORT_FILE}")
+    lat = geolocation_data["latitude"]
+    lon = geolocation_data["longitude"]
     map_html = create_map(lat, lon)
     html_report = create_html_report(audit_log_data, map_html)
-    save_report(html_report, "ip_analysis_report.html")
+    with open("ip_analysis_report.html", "w", encoding="utf-8") as f:
+        f.write(html_report)
     print("HTML report saved to ip_analysis_report.html")
 
 if __name__ == "__main__":
