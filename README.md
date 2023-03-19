@@ -1,41 +1,43 @@
-# IP-Adress-Forensics
-A small python script that will do some queries helping investigate IP-addresses with focus on extracting DNS, WHOIS, Requests, ipWhois information for a certain IP adress
+IP Analysis Script
+This Python script performs an analysis of a given IP address, including Whois, DNS, and geolocation analysis. The results are saved in both text and HTML formats, with an embedded map showing the geolocation in the HTML report. An audit log is also maintained for each analysis.
 
-To run the script, you will need to have Python 3 installed on your computer. Additionally, you will need to install the following Python modules:
+Features
+Whois analysis
+DNS analysis
+Geolocation analysis
+Text report generation
+HTML report generation with embedded map
+Audit log maintenance
 
-socket: This module provides a way to look up DNS information for an IP address.<br>
-whois: This module provides a way to look up WHOIS information for an IP address.<br>
-requests: This module provides a way to make HTTP requests to external APIs, which we will use to perform geolocation lookups.<br>
-ipwhois: This module provides a way to look up IP information, including RDAP information, for an IP address.<br>
+Installation
+Clone the repository or download the ip_analysis.py script.
 
-You can install these modules using pip, the Python package manager. Open a command prompt or terminal window, and type the following commands:
+Install the required Python libraries using the following command:
 
-Requirements:
+bash
+Copy code
+pip install -r requirements.txt
 
-****
-perl<br>
-Copy code<br>
-pip install socket<br>
-pip install python-whois<br>
-pip install requests<br>
-pip install ipwhois<br>
-****
+The required libraries are:
+- ipwhois
+- dnspython
+- geoip2
+- folium
 
-When you run this script, it prompts you to enter an IP address to investigate. It then performs a DNS lookup, WHOIS lookup, geolocation lookup, and IP information lookup on the specified IP address, and prints the results to the console.
+Download the GeoLite2-City.mmdb file from MaxMind and extract it to a directory of your choice. You will be prompted for the path to this file when running the script.
 
-Note that the ipwhois module requires an API key to perform RDAP lookups. If you don't have an API key, you can sign up for a free one at https://whoisxmlapi.com/. Once you have an API key, you can pass it to the IPWhois constructor like this:
+Usage
+Run the script using the following command:
+bash
+Copy code
+python ip_analysis.py
 
-****
-python<br>
-Copy code<br>
-from ipwhois import IPWhois<br>
+Follow the prompts to enter the IP address, investigator's name, case number, and path to the GeoLite2-City.mmdb file.
 
-api_key = "YOUR_API_KEY"<br>
-ipwhois_result = IPWhois(ip_address, api_key=api_key).lookup_rdap()<br>
-****
+The script will perform the analysis and display the results on the console.
 
-This will allow you to perform RDAP lookups using the ipwhois module.
+The script will save the analysis results in two files:
 
-RUN THE SCRIPT and you will be prompted for an IP-address
-
-\\python ip_investigation.py
+ip_analysis_report.txt: A text report containing the analysis results.
+ip_analysis_report.html: An HTML report containing the analysis results and an embedded map showing the geolocation of the IP address.
+An audit log is maintained in the audit_log.json file, which contains the details of each analysis performed using the script.
