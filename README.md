@@ -1,4 +1,4 @@
-IP Analysis Script
+IP Analysis Script<br>
 This Python script performs an analysis of a given IP address, including Whois, DNS, and geolocation analysis. The results are saved in both text and HTML formats, with an embedded map showing the geolocation in the HTML report. An audit log is also maintained for each analysis.
 
 Features
