@@ -10,13 +10,11 @@ HTML report generation with embedded map
 Audit log maintenance
 
 Installation
-Clone the repository or download the ip_analysis.py script.
+You must install phython on your computer first, then clone the repository or download the ip_analysis.py script.
 
 Install the required Python libraries using the following command:
 
-bash
-Copy code
-pip install -r requirements.txt
+"pip install -r requirements.txt"
 
 The required libraries are:
 - ipwhois
@@ -28,9 +26,8 @@ Download the GeoLite2-City.mmdb file from MaxMind and extract it to a directory 
 
 Usage
 Run the script using the following command:
-bash
-Copy code
-python ip_analysis.py
+
+"python ip_analysis.py"
 
 Follow the prompts to enter the IP address, investigator's name, case number, and path to the GeoLite2-City.mmdb file.
 
