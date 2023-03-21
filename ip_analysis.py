@@ -13,6 +13,7 @@ import geoip2.database
 
 AUDIT_LOG_FILE = "audit_log.csv"
 REPORT_FILE = "ip_analysis_report.txt"
+DATABASE_FILE = "GeoLite2-City.mmdb"
 
 def save_audit_log(log_data):
     if os.path.exists(AUDIT_LOG_FILE):
@@ -27,14 +28,15 @@ def save_audit_log(log_data):
         if mode == "w":
             writer.writeheader()
 
-        log_data["whois_data"] = json.dumps(log_data["whois_data"])
-        log_data["geolocation_data"] = json.dumps(log_data["geolocation_data"])
-        writer.writerow(log_data)
+        log_data_copy = log_data.copy()
+        log_data_copy["whois_data"] = json.dumps(log_data["whois_data"])
+        log_data_copy["geolocation_data"] = json.dumps(log_data["geolocation_data"])
+        writer.writerow(log_data_copy)
 
 def whois_analysis(ip):
     whois = IPWhois(ip)
     raw_result = whois.lookup_rdap()
-    
+
     result = {
         "ip_address": raw_result.get("network", {}).get("ip_address"),
         "cidr": raw_result.get("network", {}).get("cidr"),
@@ -50,8 +52,11 @@ def whois_analysis(ip):
 def dns_analysis(ip):
     resolver = dns.resolver.Resolver()
     reverse_ip = dns.reversename.from_address(ip)
-    result = resolver.resolve(reverse_ip, "PTR")
-    return result[0].to_text()
+    try:
+        result = resolver.resolve(reverse_ip, "PTR")
+        return result[0].to_text()
+    except dns.resolver.NXDOMAIN:
+        return "No PTR record found."
 
 def geolocation_analysis(ip, database_path):
     with geoip2.database.Reader(database_path) as reader:
@@ -168,7 +173,7 @@ def main():
     ip = input("Enter the IP address: ")
     investigator = input("Enter the investigator's name: ")
     case_number = input("Enter the case number: ")
-    database_path = input("Enter the path to the GeoLite2-City.mmdb file: ")
+    database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), DATABASE_FILE)
     print("\nPerforming Whois analysis...")
     whois_data = whois_analysis(ip)
     for key, value in whois_data.items():
