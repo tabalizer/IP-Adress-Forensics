@@ -1,40 +1,40 @@
-IP Analysis Script<br>
-This Python script performs an analysis of a given IP address, including Whois, DNS, and geolocation analysis. The results are saved in both text and HTML formats, with an embedded map showing the geolocation in the HTML report. An audit log is also maintained for each analysis.
+# IP Analysis Report
 
-Features
-Whois analysis
-DNS analysis
-Geolocation analysis
-Text report generation
-HTML report generation with embedded map
-Audit log maintenance
+A Python script that generates an IP address analysis report containing Whois, DNS, and geolocation information.
 
-Installation
-You must install phython on your computer first, then clone the repository or download the ip_analysis.py script.
+## Prerequisites
 
-Install the required Python libraries using the following command:
+- Python 3.6 or later
+- The following Python libraries:
+  - folium
+  - ipwhois
+  - dnspython
+  - geoip2
 
-"pip install -r requirements.txt"
+## Installation
 
-The required libraries are:
-- ipwhois
-- dnspython
-- geoip2
-- folium
+	1. Install Python from the [official website](https://www.python.org/downloads/) if you haven't already.
+	2. Clone the repository or download the script files.
+	3. Install the required Python libraries using pip by running the following command in your terminal or command prompt:
 
-Download the GeoLite2-City.mmdb file from MaxMind and extract it to a directory of your choice. You will be prompted for the path to this file when running the script.
+	"pip install folium ipwhois dnspython geoip2"
 
 Usage
-Run the script using the following command:
 
-"python ip_analysis.py"
+	1. 	Download the GeoLite2-City.mmdb database file from MaxMind's website. Place the file in the same folder as the script.
+	2. 	Open a terminal or command prompt, navigate to the directory containing the script, and run the script using the following command:
 
-Follow the prompts to enter the IP address, investigator's name, case number, and path to the GeoLite2-City.mmdb file.
+	"python ip_analysis.py"
 
-The script will perform the analysis and display the results on the console.
+	3. 	Follow the prompts to enter the IP address, investigator's name, and case number.
+	4. 	The script will generate an IP address analysis report containing Whois, DNS, and geolocation information. 
+		The report will be saved as a text file (ip_analysis_report.txt) and an HTML file (ip_analysis_report.html) in the same folder as the script.
+	5. The script will also save the analysis data to an audit log CSV file (audit_log.csv).
 
-The script will save the analysis results in two files:
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-ip_analysis_report.txt: A text report containing the analysis results.
-ip_analysis_report.html: An HTML report containing the analysis results and an embedded map showing the geolocation of the IP address.
-An audit log is maintained in the audit_log.json file, which contains the details of each analysis performed using the script.
+Disclaimer
+The data provided by this script is for informational purposes only and should not be considered as legal advice. 
+The accuracy of the data is not guaranteed, and the use of the information provided is at your own risk. 
+Always consult with a legal professional before taking any action based on the information provided.
